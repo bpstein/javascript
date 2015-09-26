@@ -9,7 +9,7 @@ $(document).ready(function(){
 		$('h1#heading').text($(this).text());
 
 		// Get and filter link text
-		var category = $(this).text().toLowerCase().replace(' ', ' - ');
+		var category = $(this).text().toLowerCase().replace(' ', '-');
 
 		// Remove hidden class if 'all-projects' is selected
 		if (category == 'all-projects') {
