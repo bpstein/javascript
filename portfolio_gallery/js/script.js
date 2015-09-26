@@ -31,6 +31,7 @@ $(document).ready(function(){
 		return false;
 	});
 
+	// Mouse enter overlay 
 	$('ul#gallery li').on('mouseenter', function() {
 		
 		console.log('Mouse enter is working.');
@@ -58,7 +59,22 @@ $(document).ready(function(){
 		overlay.html('<h3>'+title+'</h3><p>'+desc+'</p>');
 
 		// Fade in overlay 
-		overlay.fadeIn(1800);
+		overlay.fadeIn(400);
+	});
+
+		// Mouse leave overlay 
+	$('ul#gallery li').on('mouseleave', function() {
+		
+		console.log('Mouse leave is working.');
+		
+		// Create overlay div 
+		$(this).append('<div class="overlay"></div>');
+
+		// Get overlay div 
+		var overlay = $(this).children('.overlay');
+
+		// Fade in overlay 
+		overlay.fadeOut(400);
 	});
 
 });
