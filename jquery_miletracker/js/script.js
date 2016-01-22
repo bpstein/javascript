@@ -1,10 +1,31 @@
 $(document).one('pageinit', function(){
+	// Display runs
+	showRuns();
+
+
 	// Add Handler
 	$('#submitAdd').on('tap', addRun);
+
+	/****** SHOW ALL RUNS ON HOMEPAGE *******/
+
+	function showRuns() {
+		// Get runs object
+		var runs = getRunsObject();
+
+		// Check if empty 
+		if(runs != '' && runs != null) {
+			for(var i = 0; i < runs.length; i++) {
+				$('#stats').append('<li class:"ui-body-inherit ui-li-static"><strong>Date:</strong>'+ ' ' + runs[i]["date"]+
+					'<br><strong>Distance: </strong>' + ' ' + runs[i]["miles"] + 'm<div class="controls">' + 
+					'<a href="#edit">Edit</a> | <a href="#delete">Delete</a></li>');
+			}
+			$('#home').bind('pageinit', function() {
+				$('stats').listview('refresh');
+			});
+		}
+	}
 	
-	/*
-	 * Add a run
-	 */
+	/****** ADD RUNS FUNCTIONALITY *******/
 	 function addRun(){
 		// Get form values
 		var miles = $('#addMiles').val();
@@ -21,7 +42,7 @@ $(document).one('pageinit', function(){
 		// Add run to runs array
 		runs.push(run);
 		
-		alert('Run Added');
+		alert('The run has been added!');
 		
 		// Set stringified object to localStorage
 		localStorage.setItem('runs', JSON.stringify(runs));
@@ -32,10 +53,10 @@ $(document).one('pageinit', function(){
 		return false;
 	 }
 	 
+
+
 	 
-	 /*
-	 * Get the runs object
-	 */
+	 /****** GET RUNS OBJECT *******/
 	 function getRunsObject(){
 		// Set runs array
 		var runs = new Array();
@@ -47,6 +68,8 @@ $(document).one('pageinit', function(){
 			// Set to runs
 			var runs = JSON.parse(currentRuns);
 		}
+
+
 		
 		// Return runs object
 		return runs.sort(function(a, b){return new Date(b.date) - new Date(a.date)});
