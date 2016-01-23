@@ -1,6 +1,5 @@
 $(document).one('pageinit', function(){
 
-
 	/****** EVENT HANDLERS ******/
 	// Display runs
 	showRuns();
@@ -11,11 +10,18 @@ $(document).one('pageinit', function(){
 	// Edit Handler
 	$('#submitEdit').on('tap', editRun);
 	
+	// Delete Handler
+	$('#stats').on('tap','#deleteLink', deleteRun);
+	
 	// Set Current Handler
 	$('#stats').on('tap','#editLink', setCurrent);
 	
+	// Clear Handler
+	$('#clearRuns').on('tap', clearRuns);
 	
-	/****** SHOW RUNS ON HOMEPAGE ******/
+	
+
+	/****** DISPLAY RUNS ON HOMEPAGE ******/
 	function showRuns(){
 		// get runs object
 		var runs = getRunsObject();
@@ -25,14 +31,18 @@ $(document).one('pageinit', function(){
 			for(var i = 0;i < runs.length;i++){
 				$('#stats').append('<li class="ui-body-inherit ui-li-static"><strong>Date:</strong>'+runs[i]["date"]+
 				' <br><strong>Distance: </strong>'+runs[i]["miles"]+'m<div class="controls">' +
-				'<a href="#edit" id="editLink" data-miles="'+runs[i]["miles"]+'" data-date="'+runs[i]["date"]+'">Edit</a> | <a href="#">Delete</a></li>');
+				'<a href="#edit" id="editLink" data-miles="'+runs[i]["miles"]+'" data-date="'+runs[i]["date"]+'">Edit</a> | <a href="#" id="deleteLink" data-miles="'+runs[i]["miles"]+'" data-date="'+runs[i]["date"]+'" onclick="return confirm(\'Are You Sure?\')">Delete</a></li>');
 			}
 			$('#home').bind('pageinit', function(){
 				$('#stats').listview('refresh');
 			});
+		} else {
+			$('#stats').html('<p>You have no logged runs</p>');
 		}
 	}
 	 
+	
+
 	/****** ADD RUNS ******/
 	function addRun(){
 		// Get form values
@@ -62,6 +72,7 @@ $(document).one('pageinit', function(){
 	}
 	 
 	 
+	
 	/****** EDIT RUNS ******/
 	function editRun(){
 		// Get current data
@@ -100,11 +111,48 @@ $(document).one('pageinit', function(){
 		window.location.href="index.html";
 		
 		return false;
-	 }
+	}
+
+
+
+	/****** CLEAR ALL RUNS ******/
+	function clearRuns(){
+		localStorage.removeItem('runs');
+		$('#stats').html('<p>You have no logged runs</p>');
+	}
 	 
 	 
-	/****** GET THE RUNS OBJECT ******/
-	 function getRunsObject(){
+	/****** DELETE A RUN ******/
+	function deleteRun(){
+		// Set ls items
+		localStorage.setItem('currentMiles', $(this).data('miles'));
+		localStorage.setItem('currentDate', $(this).data('date'));
+		
+		// Get current data
+		currentMiles = localStorage.getItem('currentMiles');
+		currentDate = localStorage.getItem('currentDate');
+		
+		var runs = getRunsObject();
+		
+		// Loop through runs
+		for(var i = 0;i < runs.length;i++){
+			if(runs[i].miles == currentMiles && runs[i].date == currentDate){
+				runs.splice(i,1);
+			}
+			localStorage.setItem('runs',JSON.stringify(runs));
+	  }
+		
+		alert('Run Deleted');
+		
+		// Redirect
+		window.location.href="index.html";
+		
+		return false;
+	}
+	 
+	 
+	/****** GET RUNS OBJECT ******/
+	function getRunsObject(){
 		// Set runs array
 		var runs = new Array();
 		// Get current runs from localStorage
@@ -118,10 +166,11 @@ $(document).one('pageinit', function(){
 		
 		// Return runs object
 		return runs.sort(function(a, b){return new Date(b.date) - new Date(a.date)});
-	 }
+	}
 	 
-	/****** SET THE CURRENT MILES AND DATE ******/
-	 function setCurrent(){
+	
+	/****** SET CURRENT MILES AND DATE ******/
+	function setCurrent(){
 		// Set ls items
 		localStorage.setItem('currentMiles', $(this).data('miles'));
 		localStorage.setItem('currentDate', $(this).data('date'));
@@ -129,5 +178,5 @@ $(document).one('pageinit', function(){
 		// Insert form fields
 		$('#editMiles').val(localStorage.getItem('currentMiles'));
 		$('#editDate').val(localStorage.getItem('currentDate'));
-	 }
+	}
 });

@@ -1,6 +1,6 @@
-/*body{
+body{
 	text-align:center;
-}*/
+}
 
 ul{
 	display:block;
@@ -8,4 +8,8 @@ ul{
 
 .controls{
 	float:right;
+}
+
+#stats p {
+	color: red;
 }
